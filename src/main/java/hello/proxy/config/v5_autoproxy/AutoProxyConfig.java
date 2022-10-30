@@ -64,7 +64,17 @@ public class AutoProxyConfig {
         LogTraceAdvice advice = new LogTraceAdvice(logTrace);
         // advisor = pointcut + advice
         return new DefaultPointcutAdvisor(pointcut, advice);
+        // 즉, 자동 프록시 생성기인 AnnotationAwareAspectJAutoProxyCreator 덕분에
+        // Advisor 만 스프링 빈으로 등록하면 된다.
     }
+    // advisor1, advisor2 가 제공하는 포인트컷의 조건을 모두 만족하면
+    // 프록시 자동 생성기는 프록시를 하나만 생성한다.
+    // 프록시 팩토리가 생성하는 프록시는 내부에 여러 advisor 들을 포함할 수 있기 때문이다.
+    // 그래서 프록시를 여러 개 생성해서 비용을 낭비할 이유가 없다.
+
+    // 1. advisor1 만 만족 : 프록시 1개 생성, 프록시에 advisor1 만 포함
+    // 2. advisor1, advisor2 만족 : 프록시 1개 생성, 프록시에 advisor1, advisor2 포함
+    // 3. advisor1, advisor2 만족X : 프록시 생성 X
 
 }
 // 스프링부트 라이브러리 추가로 AOP 관련 클래스를 자동으로 스프링빈에 등록한다. : AopAutoConfiguration
