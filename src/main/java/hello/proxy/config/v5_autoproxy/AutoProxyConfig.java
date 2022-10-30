@@ -5,6 +5,7 @@ import hello.proxy.config.AppV2Config;
 import hello.proxy.config.v3_proxyfactory.advice.LogTraceAdvice;
 import hello.proxy.trace.logtrace.LogTrace;
 import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
@@ -15,16 +16,56 @@ import org.springframework.context.annotation.Import;
 @Import({AppV1Config.class, AppV2Config.class})
 public class AutoProxyConfig {
 
-    @Bean
+    /**
+     * NameMatchMethodPointcut : 메소드명만 지정 (request*)
+     * 이름만 일치하면 프록시가 만들어지므로
+     * 의도하지않은 메소드도 호출되는 문제 발생
+     */
+//    @Bean
     public Advisor advisor1(LogTrace logTrace) {
         NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
 
         pointcut.setMappedNames("request*", "order*", "save*");
+        // 위와 같은 셋팅으로는 아래의 로그도 출력되는 것을 확인할 수 있다.
+        // EnableWebMvcConfiguration.requestMappingHandlerAdapter()
+        // request* 으로 설정되어 request 만 있으면 프록시가 만들어지도 어드바이스도 적용되는 것이다.
+        // 즉, 패키지에 메소드명까지 함께 지정할 수 있는 정밀한 포인트컷이 필요하다.
         LogTraceAdvice advice = new LogTraceAdvice(logTrace);
 
         // advisor = pointcut + advice
         return new DefaultPointcutAdvisor(pointcut, advice);
     }
+
+    /**
+     * AspectJExpressionPointcut : 패키지에 메소드명까지 함께 지정할 수 있는 포인트컷
+     * AOP 에 특화된 포인트컷 표현식을 적용
+     */
+//    @Bean
+    public Advisor advisor2(LogTrace logTrace) {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        // hello.proxy.app 패키지와 그 하위패키지 모든 메소드는 포인트컷 매칭 대상 : no-log도 대상이된다.
+        pointcut.setExpression("execution(* hello.proxy.app..*(..))");
+        // * : 모든 반환타입
+        // hello.proxy.app.. : 해당 패키지와 그 하위 패키지
+        // *(..) : * 모든 메소드명, (..) 파라미터 상관없음
+        LogTraceAdvice advice = new LogTraceAdvice(logTrace);
+        // advisor = pointcut + advice
+        return new DefaultPointcutAdvisor(pointcut, advice);
+    }
+
+    /**
+     * no-log 까지 고려한 표현식
+     */
+    @Bean
+    public Advisor advisor3(LogTrace logTrace) {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        // hello.proxy.app 패키지와 하위패키지의 모든 메소드를 매칭하되, noLog() 제외하라
+        pointcut.setExpression("execution(* hello.proxy.app..*(..)) && !execution(* hello.proxy.app..noLog(..))");
+        LogTraceAdvice advice = new LogTraceAdvice(logTrace);
+        // advisor = pointcut + advice
+        return new DefaultPointcutAdvisor(pointcut, advice);
+    }
+
 }
 // 스프링부트 라이브러리 추가로 AOP 관련 클래스를 자동으로 스프링빈에 등록한다. : AopAutoConfiguration
 // 빈 후처리기는 이제 등록하지 않아도 된다.
