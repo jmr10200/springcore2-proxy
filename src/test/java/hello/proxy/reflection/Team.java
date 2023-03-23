@@ -3,7 +3,7 @@ package hello.proxy.reflection;
 public class Team {
 
     private String name;
-    private int number;
+    public int number;
 
     public Team(String name, int number) {
 
