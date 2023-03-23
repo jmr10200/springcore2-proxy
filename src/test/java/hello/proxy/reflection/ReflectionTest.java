@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class ReflectionTest {
@@ -80,6 +81,28 @@ public class ReflectionTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void methodTest() {
+        try {
+            System.out.println("===== 메소드 목록 =====");
+            Arrays.stream(Team.class.getDeclaredMethods()).forEach(System.out::println);
+
+            // Team 클래스의 transferNumber 메소드 취득
+            Method numberMethod = Team.class.getMethod("transferNumber", int.class);
+            // Team 데이터
+            Team team = new Team("빌리", 10);
+            System.out.println("===== 메소드 실행 전 =====");
+            System.out.println(team);
+            // transferNumber 메소드 실행 : 10 + 5 = 15 리턴
+            Object obj = numberMethod.invoke(team, 5);
+            System.out.println("===== invoke() 메소드 실행 후 =====");
+            System.out.println("number = " + obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
