@@ -105,4 +105,22 @@ public class ReflectionTest {
 
     }
 
+
+    @Test
+    void annotation() {
+        try {
+            // Guild.Class 와 동일
+            Class<?> guildClass = Class.forName("hello.proxy.reflection.Guild");
+            // 클래스에 붙어있는 어노테이션 취득
+            MyAnnotation guildClassAnnotation = guildClass.getAnnotation(MyAnnotation.class);
+            // 어노테이션 값 취득
+            String name = guildClassAnnotation.name();
+            int value = guildClassAnnotation.value();
+            // 출력
+            System.out.println("name = " + name + " , value = " + value);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
