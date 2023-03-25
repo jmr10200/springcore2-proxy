@@ -136,16 +136,16 @@ public class ReflectionTest {
         System.out.println(c.getClass().getName());
 
         // execute1() 호출
-        int execute1 = c.execute1("UP");
+        int execute1 = c.execute1("NORTH");
         System.out.println("execute1 = " + execute1);
-        assertEquals(1, execute1);
+        assertEquals(0, execute1);
         // execute2() 호출
-        int execute2 = c.execute2("RIGHT");
+        int execute2 = c.execute2("WEST");
         System.out.println("execute2 = " + execute2);
         assertEquals(3, execute2);
         // execute1() 호출
-        IllegalArgumentException assertThrows = assertThrows(IllegalArgumentException.class, () -> c.execute1("LEFT"));
+        IllegalArgumentException assertThrows = assertThrows(IllegalArgumentException.class, () -> c.execute1("RIGHT"));
         System.out.println("execute3 = " + assertThrows.getMessage());
-        assertEquals("Arg must be 'UP' or 'DOWN'", assertThrows.getMessage());
+        assertEquals("Arg must be 'NORTH' or 'SOUTH'", assertThrows.getMessage());
     }
 }
