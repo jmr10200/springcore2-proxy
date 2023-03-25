@@ -14,7 +14,8 @@ public class ProxyReflectionTest {
         CommandA target = new CommandAImpl();
         CommandTimeInvocationHandler handler = new CommandTimeInvocationHandler(target);
         CommandA proxy = (CommandA) Proxy.newProxyInstance(CommandA.class.getClassLoader(), new Class[]{CommandA.class}, handler);
-        proxy.execute("SOUTH");
+        int result = proxy.execute("SOUTH");
+        log.info("proxy.execute() result = {}", result);
         log.info("targetClass = {}", target.getClass());
         log.info("proxyClass = {}", proxy.getClass());
     }
@@ -24,7 +25,8 @@ public class ProxyReflectionTest {
         CommandB target = new CommandBImpl();
         CommandTimeInvocationHandler handler = new CommandTimeInvocationHandler(target);
         CommandB proxy = (CommandB) Proxy.newProxyInstance(CommandB.class.getClassLoader(), new Class[]{CommandB.class}, handler);
-        proxy.execute("WEST");
+        int result = proxy.execute("WEST");
+        log.info("proxy.execute() result = {}", result);
         log.info("targetClass = {}", target.getClass());
         log.info("proxyClass = {}", proxy.getClass());
     }

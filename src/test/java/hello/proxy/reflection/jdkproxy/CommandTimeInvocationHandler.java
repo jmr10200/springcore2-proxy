@@ -35,7 +35,6 @@ public class CommandTimeInvocationHandler implements InvocationHandler {
 
         long endTime = System.currentTimeMillis();
         long resultTime = endTime - startTime;
-        log.info("execute result = {}", result);
 
         log.info("TimeProxy 종료 resultTime = {}", resultTime);
         return result;
