@@ -10,7 +10,7 @@ import java.lang.reflect.Proxy;
 public class ProxyReflectionTest {
 
     @Test
-    void dynamicA() {
+    void commandATest() {
         CommandA target = new CommandAImpl();
         CommandTimeInvocationHandler handler = new CommandTimeInvocationHandler(target);
         CommandA proxy = (CommandA) Proxy.newProxyInstance(CommandA.class.getClassLoader(), new Class[]{CommandA.class}, handler);
@@ -20,7 +20,7 @@ public class ProxyReflectionTest {
     }
 
     @Test
-    void dynamicB() {
+    void commandBTest() {
         CommandB target = new CommandBImpl();
         CommandTimeInvocationHandler handler = new CommandTimeInvocationHandler(target);
         CommandB proxy = (CommandB) Proxy.newProxyInstance(CommandB.class.getClassLoader(), new Class[]{CommandB.class}, handler);
