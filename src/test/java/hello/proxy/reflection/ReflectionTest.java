@@ -1,12 +1,14 @@
 package hello.proxy.reflection;
 
+import hello.proxy.reflection.proxy.Command;
+import hello.proxy.reflection.proxy.CommandInvocationHandler;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReflectionTest {
 
@@ -123,4 +125,27 @@ public class ReflectionTest {
         }
     }
 
+
+    @Test
+    void proxyTest() {
+        Command c = (Command) Proxy.newProxyInstance(
+                Command.class.getClassLoader(),
+                new Class<?>[]{Command.class},
+                new CommandInvocationHandler());
+
+        System.out.println(c.getClass().getName());
+
+        // execute1() 호출
+        int execute1 = c.execute1("UP");
+        System.out.println("execute1 = " + execute1);
+        assertEquals(1, execute1);
+        // execute2() 호출
+        int execute2 = c.execute2("RIGHT");
+        System.out.println("execute2 = " + execute2);
+        assertEquals(3, execute2);
+        // execute1() 호출
+        IllegalArgumentException assertThrows = assertThrows(IllegalArgumentException.class, () -> c.execute1("LEFT"));
+        System.out.println("execute3 = " + assertThrows.getMessage());
+        assertEquals("Arg must be 'UP' or 'DOWN'", assertThrows.getMessage());
+    }
 }
