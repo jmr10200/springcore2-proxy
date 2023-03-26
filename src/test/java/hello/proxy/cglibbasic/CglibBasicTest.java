@@ -5,8 +5,11 @@ import hello.proxy.cglibbasic.code.CommandServiceImpl;
 import hello.proxy.cglibbasic.code.ConcreteService;
 import hello.proxy.cglibbasic.code.TimeCheckMethodInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.cglib.proxy.Enhancer;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class CglibBasicTest {
@@ -28,6 +31,7 @@ public class CglibBasicTest {
 
         String callResult = proxy.call();
         log.info("proxy.call() result = {}", callResult);
+        assertEquals(callResult, "call() complete");
     }
 
     @Test
@@ -44,5 +48,6 @@ public class CglibBasicTest {
 
         String updateResult = proxy.update();
         log.info("proxy.execute() result = {}", updateResult);
+        assertEquals(updateResult, "update() complete");
     }
 }
