@@ -65,6 +65,7 @@ public class ProxyFactoryTest {
 
         ProxyFactory proxyFactory = new ProxyFactory(target);
         proxyFactory.addAdvice(new TimeCheckAdvice());
+        // 스프링부트는 항상 true 로 설정해서 항상 CGLIB 로 생성한다.
         proxyFactory.setProxyTargetClass(true); // 중요
 
         CommandService proxy = (CommandService) proxyFactory.getProxy();
