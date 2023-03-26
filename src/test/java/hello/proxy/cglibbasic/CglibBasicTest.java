@@ -1,5 +1,7 @@
 package hello.proxy.cglibbasic;
 
+import hello.proxy.cglibbasic.code.CommandService;
+import hello.proxy.cglibbasic.code.CommandServiceImpl;
 import hello.proxy.cglibbasic.code.ConcreteService;
 import hello.proxy.cglibbasic.code.TimeCheckMethodInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,5 +28,21 @@ public class CglibBasicTest {
 
         String callResult = proxy.call();
         log.info("proxy.call() result = {}", callResult);
+    }
+
+    @Test
+    void interfaceCGLIB() {
+        CommandService target = new CommandServiceImpl();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(CommandService.class);
+        enhancer.setCallback(new TimeCheckMethodInterceptor(target));
+
+        CommandService proxy = (CommandService) enhancer.create();
+        log.info("targetClass = {}", target.getClass());
+        log.info("proxyClass = {}", proxy.getClass());
+
+        String updateResult = proxy.update();
+        log.info("proxy.execute() result = {}", updateResult);
     }
 }
