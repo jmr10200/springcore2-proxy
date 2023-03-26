@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProxyFactoryTest {
 
     @Test
-    @DisplayName("인터페이스가 있으면 JDK 동적 프록시 사용")
+    @DisplayName("인터페이스가 있는 경우 : JDK 동적 프록시")
     void interfaceProxy() {
         CommandService target = new CommandServiceImpl();
 
@@ -31,14 +31,14 @@ public class ProxyFactoryTest {
 
         proxy.find();
 
-        // 인터페이스 있는경우, AopProxy 이며, JDK 동적 프록시이다
+        // 인터페이스 있는경우, AopProxy 이며, JDK 동적 프록시
         assertTrue(AopUtils.isAopProxy(proxy));
         assertTrue(AopUtils.isJdkDynamicProxy(proxy));
         assertFalse(AopUtils.isCglibProxy(proxy));
     }
 
     @Test
-    @DisplayName("구체 클래스만 있으면 CGLIB 사용")
+    @DisplayName("구체 클래스만 있는 경우: CGLIB")
     void concreteProxy() {
         ConcreteService target = new ConcreteService();
 
@@ -52,14 +52,14 @@ public class ProxyFactoryTest {
 
         proxy.call();
 
-        // 구체 클래스만 있으면 CGLIB
+        // 구체 클래스만 있으면 AopProxy 이며, CGLIB
         assertTrue(AopUtils.isAopProxy(proxy));
         assertFalse(AopUtils.isJdkDynamicProxy(proxy));
         assertTrue(AopUtils.isCglibProxy(proxy));
     }
 
     @Test
-    @DisplayName("proxyTargetClass 옵션을 사용하면 인터페이스가 있어도 CGLIB를 사용하고, 클래스 기반 프록시 사용")
+    @DisplayName("proxyTargetClass(true) 설정시 인터페이스가 있어도 CGLIB, 클래스 기반 프록시 사용")
     void proxyTargetClass() {
         CommandService target = new CommandServiceImpl();
 
