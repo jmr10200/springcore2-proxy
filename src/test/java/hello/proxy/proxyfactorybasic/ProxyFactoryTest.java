@@ -2,6 +2,7 @@ package hello.proxy.proxyfactorybasic;
 
 import hello.proxy.proxyfactorybasic.code.CommandService;
 import hello.proxy.proxyfactorybasic.code.CommandServiceImpl;
+import hello.proxy.proxyfactorybasic.code.ConcreteService;
 import hello.proxy.proxyfactorybasic.code.TimeCheckAdvice;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -34,5 +35,26 @@ public class ProxyFactoryTest {
         assertTrue(AopUtils.isAopProxy(proxy));
         assertTrue(AopUtils.isJdkDynamicProxy(proxy));
         assertFalse(AopUtils.isCglibProxy(proxy));
+    }
+
+    @Test
+    @DisplayName("구체 클래스만 있으면 CGLIB 사용")
+    void concreteProxy() {
+        ConcreteService target = new ConcreteService();
+
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        proxyFactory.addAdvice(new TimeCheckAdvice());
+
+        ConcreteService proxy = (ConcreteService) proxyFactory.getProxy();
+
+        log.info("targetClass = {}", target.getClass());
+        log.info("proxyClass = {}", proxy.getClass());
+
+        proxy.call();
+
+        // 구체 클래스만 있으면 CGLIB
+        assertTrue(AopUtils.isAopProxy(proxy));
+        assertFalse(AopUtils.isJdkDynamicProxy(proxy));
+        assertTrue(AopUtils.isCglibProxy(proxy));
     }
 }
