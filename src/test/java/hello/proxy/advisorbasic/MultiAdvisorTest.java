@@ -36,8 +36,31 @@ public class MultiAdvisorTest {
 
         // 실행
         proxy2.execute1();
+        // 프록시를 2번 생성해야 하므로 하나만 생성하도록 해보자
+    }
+
+    /** 프록시 여러개 생성하는 방법보다 성능상 좋다. */
+    @Test
+    @DisplayName("하나의 프록시, 여러 어드바이저")
+    void multiAdvisorTest2() {
+        // proxy -> advisor2 -> advisor1 -> target
+
+        // 어드바이저 2개 생성
+        DefaultPointcutAdvisor advisor2 = new DefaultPointcutAdvisor(Pointcut.TRUE, new Advice2());
+        DefaultPointcutAdvisor advisor1 = new DefaultPointcutAdvisor(Pointcut.TRUE, new Advice1());
+
+        // 프록시 팩토리에 어드바이저 등록
+        CommandInterface target = new CommandImpl();
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        // 등록
+        proxyFactory.addAdvisor(advisor2);
+        proxyFactory.addAdvisor(advisor1);
+        // 실행
+        CommandInterface proxy = (CommandInterface) proxyFactory.getProxy();
+        proxy.execute1();
 
     }
+
 
     /** 어드바이스 1 */
     @Slf4j
