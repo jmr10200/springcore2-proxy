@@ -14,7 +14,7 @@ public class PhoneToRadioPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        log.info("result \n => beanName = {} \n => bean = {}", beanName, bean);
+        log.info("print beanName, bean \n => beanName = {} \n => bean = {}", beanName, bean);
 
         if (bean instanceof Phone) {
             return new Radio();
